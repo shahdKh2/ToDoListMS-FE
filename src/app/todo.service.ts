@@ -51,17 +51,14 @@ export class TodoService {
   }
 
   setCompletionStatus(i: number): void {
-
     const todos = this.getTasksFromStorage();
-
-    if (this.todos[i].isComplete) {
-      this.todos[i].isComplete = false;
-    } else {
-      this.todos[i].isComplete = true;
-    }
+    todos[i].isComplete = !todos[i].isComplete;  //completion status
     this.saveTasksToStorage(todos);
-
   }
 
+  searchTasks(query: string): Todo[] {
+    const todos = this.getTasksFromStorage();
+    return todos.filter(todo => todo.title.toLowerCase().includes(query.toLowerCase()));
+  }
 
 }

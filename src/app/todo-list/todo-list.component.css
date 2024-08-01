@@ -9,12 +9,11 @@
 }
 
 .task-input {
-  flex: 3;
+  flex: 1;
   font-size: 14px;
   border: 1px solid #ccc;
   border-radius: 4px;
   margin-right: 10px;
-  
 }
 
 #submit-btn {
@@ -93,3 +92,25 @@
 .task-table button:hover {
   background-color: #c82333;
 }
+
+.completed {
+  text-decoration: line-through;
+  color: grey;
+}
+
+.refresh-icon {
+  width: 20px;
+  height: 20px;
+  background-color: #fff;
+  border: none;
+
+}
+
+.refresh-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  margin-left: 5px;
+}
+

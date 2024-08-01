@@ -5,7 +5,14 @@
   padding: 10px;
   border: 1px solid #ddd;
   margin-bottom: 10px;
+  margin-top: 50px;
 }
+
+.completed {
+  text-decoration: line-through;
+  color: grey;
+}
+
 
 .todo-item span {
   flex: 1;
