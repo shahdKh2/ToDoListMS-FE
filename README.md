@@ -1,6 +1,12 @@
-A simple Angular 18.1.2 application to manage tasks.
-Features include adding, deleting, and mark to-do items as complete.
+This is a simple Angular 18.1.2 application to manage tasks. Features include:
 
-Here's a quick overview of what this App does: 
+• Adding A New Tasks.
+• Deleting A Task.
+• Marking Tasks As Complete.
+• Searching for a Task.
+
+Here's a quick overview of what this App does:
+Enjoy Watching! ッ 
+
 ![alt text](<public/App Overview Video.gif>)
 
