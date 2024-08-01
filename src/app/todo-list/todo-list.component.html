@@ -1,22 +1,33 @@
 <div>
-  <form [formGroup]="todoForm" (ngSubmit)="addTask()">
-    <!--  Reminderrrr: formControlName to connect the input with the form controller -->
-    <input formControlName="title" placeholder="Add A New Task">
-    <button type="submit">Add</button>
+  <form [formGroup]="todoForm" (ngSubmit)="addTask()" class="task-form">
+    <input formControlName="title" placeholder="Add your task here .." class="task-input">
+    <button type="submit" id="submit-btn">Add</button>
   </form>
 
-  <!-- ==================================== -->
-
-
   @if (todos.length > 0) {
-  @for ( todo of todos; track todo; let i=$index) {
-
-  <app-todo-item [todo]="todo" (click)="deleteTask(i,$event)" (toggleCompletion)="isCompletion(i)"></app-todo-item>
-
-
-  }} @else {
-  <p style="color: red;">There Is No Tasks .. </p>
+    <table class="task-table">
+      <thead>
+        <tr>
+          <th>Task</th>
+          <th>Completed</th>
+          <th>Delete</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (todo of todos; track todo; let i=$index) {
+          <tr>
+            <td>{{ todo.title }}</td>
+            <td>
+              <input type="checkbox" [checked]="todo.isComplete" (change)="isCompletion(i)" />
+            </td>
+            <td>
+              <button (click)="deleteTask(i,$event)">Delete</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  } @else {
+    <p style="color: red;">There Are No Tasks ..</p>
   }
-
-
 </div>
