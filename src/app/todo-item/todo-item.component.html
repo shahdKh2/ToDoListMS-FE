@@ -1,8 +1,5 @@
-<p>todo-item works!</p>
-
-
-<div>
+<div class="todo-item">
   <span>{{ todo.title }}</span>
-  <button (click)="deleteTask()">Delete</button>
+  <input type="checkbox" [checked]="todo.isComplete" (change)="completionStatus.emit()">
+  <button (click)="delete.emit()" class="delete-btn">Delete</button>
 </div>
-

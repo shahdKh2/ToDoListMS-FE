@@ -8,18 +8,18 @@ import { CommonModule } from '@angular/common';
   templateUrl: './todo-item.component.html',
   styleUrls: ['./todo-item.component.css'],
 })
+
 export class TodoItemComponent {
 
-  @Input()
-  todo!: { title: string, id: number };
+  @Input() todo!: { title: string, id: number, isComplete: boolean };
   // -----------------
 
-  @Output()
-  delete = new EventEmitter<void>();
+  @Output() delete = new EventEmitter<void>();
 
   // -----------------
-  deleteTask(): void {
-    this.delete.emit();
-  }
 
+  @Output() completionStatus = new EventEmitter<boolean>();
+  
+
+  
 }

@@ -1,6 +1,3 @@
-<p>todo-list works!</p>
-
-
 <div>
   <form [formGroup]="todoForm" (ngSubmit)="addTask()">
     <!--  Reminderrrr: formControlName to connect the input with the form controller -->
@@ -8,17 +5,17 @@
     <button type="submit">Add</button>
   </form>
 
+  <!-- ==================================== -->
+
 
   @if (todos.length > 0) {
   @for ( todo of todos; track todo; let i=$index) {
 
-  <app-todo-item [todo]="todo"
-  (click)="deleteTodo(i)">
-</app-todo-item>
+  <app-todo-item [todo]="todo" (click)="deleteTask(i,$event)" (toggleCompletion)="isCompletion(i)"></app-todo-item>
 
-  }
-  } @else {
-  <p style="color: red;">There is No Tasks .. </p>
+
+  }} @else {
+  <p style="color: red;">There Is No Tasks .. </p>
   }
 
 

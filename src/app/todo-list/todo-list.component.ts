@@ -15,11 +15,12 @@ import { TodoItemComponent } from '../todo-item/todo-item.component';
 // --------------------------------------------
 
 export class TodoListComponent implements OnInit {
+
   todoForm: FormGroup;
-  todos: Todo [] = [];
+  todos: Todo[] = [];
 
 
-// ============================
+  // ============================
   // fb: form builder
   constructor(private fb: FormBuilder, private todoService: TodoService) {
     this.todoForm = this.fb.group({
@@ -27,28 +28,37 @@ export class TodoListComponent implements OnInit {
     });
 
   }
-// ============================
+  // ============================
   ngOnInit(): void {
-    this.loadTodos();
+    this.loadTasks();
   }
 
-  loadTodos(): void {
-    this.todos = this.todoService.getTodos();
+  loadTasks(): void {
+    this.todos = this.todoService.getTask();
   }
 
   addTask(): void { // ****
     if (this.todoForm.valid) {
       const title = this.todoForm.get('title')?.value;
-      const id=0;
-      this.todoService.addTodo(title,id);
-      this.loadTodos(); // update list..
+      const id = 0;
+      this.todoService.addTask(title, id);
+      this.todoForm.reset();
+      this.loadTasks(); // update list..
     }
   }
 
-  deleteTodo(i: number): void {
-    debugger
-      this.todoService.deleteTodo(i);
-      this.loadTodos();
+  deleteTask(i: number,event: MouseEvent): void {
+    // debugger
+    if (confirm('Are you sure you want to delete it??') && ((event.target as HTMLElement).tagName === 'BUTTON') ){
     
+      this.todoService.deleteTask(i);
+      this.loadTasks();
+    }
   }
+
+  isCompletion(i: number): void {
+    this.todoService.isCompletion(i);
+    this.loadTasks();
+  }
+
 }
