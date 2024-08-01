@@ -1,20 +1,31 @@
 <div>
   <form [formGroup]="todoForm" (ngSubmit)="addTask()" class="task-form">
     <input formControlName="title" placeholder="Add your task here.." class="task-input">
-    <button type="submit" id="submit-btn">Add</button>
+    <button type="submit" class="submit-btn">Add</button>
   </form>
 
   <!-- Search  -->
   <div class="task-form">
     <input [(ngModel)]="searchQuery" placeholder="Search tasks.." class="task-input">
 
-    <button id="submit-btn" (click)="filterTasks()" class="search-btn">Search</button>
+    <button class="submit-btn" (click)="filterTasks()">Search</button>
 
     <button (click)="refreshTasks()" class="refresh-btn">
       <img src="refresh.png" alt="Refresh" class="refresh-icon">
     </button>
-
   </div>
+
+  <!-- Modal for Confirmation -->
+  <div class="modal" [ngClass]="{'show': showModal}">
+    <div class="modal-content">
+      <span class="close" (click)="closeModal()">&times;</span>
+      <h2>{{ modalTitle }}</h2>
+      <p>{{ modalMessage }}</p>
+      <button class="submit-btn"  id="yes" (click)="confirmAction()">Yes</button>
+      <button class="submit-btn" (click)="closeModal()">No</button>
+    </div>
+  </div>
+
 
   @if (filteredTodos.length > 0) {
   <table class="task-table">

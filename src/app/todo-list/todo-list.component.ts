@@ -20,6 +20,10 @@ export class TodoListComponent implements OnInit {
   todos: Todo[] = [];
   filteredTodos: Todo[] = [];
   searchQuery: string = '';
+  showModal: boolean = false;
+  modalTitle: string = '';
+  modalMessage: string = '';
+  taskToAdd: string = '';
 
   // ============================
   // fb: form builder
@@ -73,6 +77,30 @@ export class TodoListComponent implements OnInit {
     this.filteredTodos = this.todos.filter(todo => 
       todo.title.toLowerCase().includes(query)
     );
+
+    if (this.filteredTodos.length === 0) {
+      this.modalTitle = 'Task Not Found';
+      this.modalMessage = 'Task not found. Do you want to add this task?';
+      this.showModal = true;
+      this.taskToAdd = this.searchQuery;
+    }
+
+  }
+
+  confirmAction(): void {
+    if (this.taskToAdd) {
+      const id = new Date().getTime();
+      this.todoService.addTask(this.taskToAdd, id);
+      this.searchQuery = '';
+      this.loadTasks();
+      this.taskToAdd = '';
+    }
+    this.closeModal();
+  }
+
+  closeModal(): void {
+    this.showModal = false;
+    this.taskToAdd = '';
   }
 
 
