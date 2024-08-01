@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { CommonModule } from '@angular/common';
 import { Todo, TodoService } from '../todo.service';
 import { TodoItemComponent } from '../todo-item/todo-item.component';
-
+// import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'app-todo-list',
   standalone: true,
@@ -32,7 +32,10 @@ export class TodoListComponent implements OnInit {
   ngOnInit(): void {
     this.loadTasks();
   }
-
+  saveTasksToLocalStorage(): void {
+    localStorage.setItem('todos', JSON.stringify(this.todos));
+  }
+  
   loadTasks(): void {
     this.todos = this.todoService.getTask();
   }
@@ -59,6 +62,7 @@ export class TodoListComponent implements OnInit {
     this.todoService.setCompletionStatus(i);
     this.loadTasks();
   }
+
 
 }
 
