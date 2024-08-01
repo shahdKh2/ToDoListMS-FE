@@ -47,17 +47,16 @@ export class TodoListComponent implements OnInit {
     }
   }
 
-  deleteTask(i: number,event: MouseEvent): void {
-    // debugger
-    if (confirm('Are you sure you want to delete it??') && ((event.target as HTMLElement).tagName === 'BUTTON') ){
-    
+  deleteTask(i: number): void {
+    if (confirm('Are you sure you want to delete it??')) {
+
       this.todoService.deleteTask(i);
       this.loadTasks();
     }
   }
 
-  isCompletion(i: number): void {
-    this.todoService.isCompletion(i);
+  setCompletionStatus(i: number): void {
+    this.todoService.setCompletionStatus(i);
     this.loadTasks();
   }
 

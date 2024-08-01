@@ -5,29 +5,29 @@
   </form>
 
   @if (todos.length > 0) {
-    <table class="task-table">
-      <thead>
-        <tr>
-          <th>Task</th>
-          <th>Completed</th>
-          <th>Delete</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (todo of todos; track todo; let i=$index) {
-          <tr>
-            <td>{{ todo.title }}</td>
-            <td>
-              <input type="checkbox" [checked]="todo.isComplete" (change)="isCompletion(i)" />
-            </td>
-            <td>
-              <button (click)="deleteTask(i,$event)">Delete</button>
-            </td>
-          </tr>
-        }
-      </tbody>
-    </table>
+  <table class="task-table">
+    <thead>
+      <tr>
+        <th>Task</th>
+        <th>Completed</th>
+        <th>Delete</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (todo of todos; track todo; let i=$index) {
+      <tr>
+        <td>{{ todo.title }}</td>
+        <td>
+          <input type="checkbox" [checked]="todo.isComplete" (change)="setCompletionStatus(i)" />
+        </td>
+        <td>
+          <button (click)="deleteTask(i)">Delete</button>
+        </td>
+      </tr>
+      }
+    </tbody>
+  </table>
   } @else {
-    <p style="color: red;">There Are No Tasks ..</p>
+  <p style="color: red; text-align: center;">There Are No Tasks ..</p>
   }
 </div>

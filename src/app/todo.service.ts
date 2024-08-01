@@ -27,8 +27,12 @@ export class TodoService {
     this.todos.splice(i, 1);
   }
 
-  isCompletion(i: number): void {
-    this.todos[i].isComplete = !this.todos[i].isComplete;
+  setCompletionStatus(i: number): void {
+    if (this.todos[i].isComplete) {
+      this.todos[i].isComplete = false;
+    } else {
+      this.todos[i].isComplete = true;
+    }
   }
 
 
