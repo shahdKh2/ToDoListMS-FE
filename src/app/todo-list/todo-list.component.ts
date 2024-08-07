@@ -1,9 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Todo, TodoService } from '../todo.service';
 import { TodoItemComponent } from '../todo-item/todo-item.component';
 import { FormsModule } from '@angular/forms';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+
 @Component({
   selector: 'app-todo-list',
   standalone: true,
@@ -11,10 +14,7 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './todo-list.component.html',
   styleUrls: ['./todo-list.component.css'],
 })
-
-// --------------------------------------------
-
-export class TodoListComponent implements OnInit {
+export class TodoListComponent implements OnInit, OnDestroy {
 
   todoForm: FormGroup;
   todos: Todo[] = [];
@@ -24,57 +24,108 @@ export class TodoListComponent implements OnInit {
   modalTitle: string = '';
   modalMessage: string = '';
   taskToAdd: string = '';
+  private destroy$ = new Subject<void>();
+  // -----------------------------------------
 
-  // ============================
-  // fb: form builder
   constructor(private fb: FormBuilder, private todoService: TodoService) {
     this.todoForm = this.fb.group({
       title: ['', [Validators.required]]
     });
-
   }
-  // ============================
+
+  // -----------------------------------------
+
   ngOnInit(): void {
     this.loadTasks();
   }
-
-  saveTasksToLocalStorage(): void {
-    localStorage.setItem('todos', JSON.stringify(this.todos));
-  }
+  // -----------------------------------------
 
   loadTasks(): void {
-    this.todos = this.todoService.getTask();
-    this.filteredTodos = this.todos;
-  }
+    this.todoService.getTask().pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(
+      {
+        next: (todos) => {
+          // debugger
+          console.log('Tasks loaded:', todos);
+          this.todos = todos;
+          this.filteredTodos = this.todos;
+          console.log('Tasks loaded:', this.todos);
 
-  addTask(): void { // ****
+        },
+        error: (error) => {
+          console.error('Error loading tasks:', error);
+        }
+      });
+  }
+  // -----------------------------------------
+
+  addTask(): void {
     if (this.todoForm.valid) {
       const title = this.todoForm.get('title')?.value;
-      const id = new Date().getTime(); // To get a unique id each time..
-      this.todoService.addTask(title, id);
-      this.todoForm.reset();
-      this.loadTasks(); // update list..
+      this.todoService.addTask(title).pipe(
+        takeUntil(this.destroy$)
+      ).subscribe({
+        next: () => {
+          this.todoForm.reset();
+          this.loadTasks();
+        },
+        error: (error) => {
+          console.error('Error adding task:', error);
+        }
+      });
+    }
+  }
+  // -----------------------------------------
+
+  deleteTask(id: number): void {
+    if (confirm('Are you sure you want to delete this task?')) {
+      this.todoService.deleteTask(id).pipe(
+        takeUntil(this.destroy$)
+      ).subscribe({
+        next: () => {
+          this.loadTasks();
+        },
+        error: (error) => {
+          console.error('Error deleting task:', error);
+        }
+      });
     }
   }
 
+  // -----------------------------------------
 
-  deleteTask(i: number): void {
-    if (confirm('Are you sure you want to delete This Task?')) {
+  setCompletionStatus(id: number, isComplete: boolean): void { //*
+    const todo = this.todos.find(t => t.id === id);
+    this.todoService.setCompletionStatus(id, isComplete).pipe(
+      takeUntil(this.destroy$)
+    ).subscribe({
+      next: () => {
 
-      this.todoService.deleteTask(i);
-      this.loadTasks();
-    }
+        // console.log(`Task status updated for id=${todo.id}`);
+        // console.log(`**After update: id=${todo.id}, title=${todo.title}, isComplete=${todo.is_complete}`);
+        // this.loadTasks()
+      },
+      error: (error) => {
+        console.error('Updating task failed:', error);
+      }
+    });
   }
 
-  setCompletionStatus(i: number): void {
-    this.todoService.setCompletionStatus(i);
-    // this.todoForm.reset();
-    this.loadTasks();
+  onCheckboxChange(id: number, event: Event, todo: Todo): void { //*
+    console.log(todo.is_complete + " :before");
+
+    todo.is_complete = !todo.is_complete
+
+    this.setCompletionStatus(id, todo.is_complete);
+    console.log(todo.is_complete + " :after");
   }
+
+  //------------------------------
 
   filterTasks(): void {
     const query = this.searchQuery.toLowerCase();
-    this.filteredTodos = this.todos.filter(todo => 
+    this.filteredTodos = this.todos.filter(todo =>
       todo.title.toLowerCase().includes(query)
     );
 
@@ -84,29 +135,42 @@ export class TodoListComponent implements OnInit {
       this.showModal = true;
       this.taskToAdd = this.searchQuery;
     }
-
   }
+  // -----------------------------------------
 
   confirmAction(): void {
     if (this.taskToAdd) {
-      const id = new Date().getTime();
-      this.todoService.addTask(this.taskToAdd, id);
-      this.searchQuery = '';
-      this.loadTasks();
-      this.taskToAdd = '';
+      this.todoService.addTask(this.taskToAdd).pipe(
+        takeUntil(this.destroy$)
+      ).subscribe({
+        next: () => {
+          this.searchQuery = '';
+          this.loadTasks();
+          this.taskToAdd = '';
+        },
+        error: (error) => {
+          console.error('error :', error);
+        }
+      });
     }
     this.closeModal();
   }
+  // -----------------------------------------
 
   closeModal(): void {
     this.showModal = false;
     this.taskToAdd = '';
   }
-
+  // -----------------------------------------
 
   refreshTasks(): void {
     this.searchQuery = ''; // Reset search query
     this.loadTasks();
   }
-}
+  // -----------------------------------------
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+}

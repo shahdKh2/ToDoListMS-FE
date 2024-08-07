@@ -21,7 +21,7 @@
       <span class="close" (click)="closeModal()">&times;</span>
       <h2>{{ modalTitle }}</h2>
       <p>{{ modalMessage }}</p>
-      <button class="submit-btn"  id="yes" (click)="confirmAction()">Yes</button>
+      <button class="submit-btn" id="yes" (click)="confirmAction()">Yes</button>
       <button class="submit-btn" (click)="closeModal()">No</button>
     </div>
   </div>
@@ -37,14 +37,17 @@
       </tr>
     </thead>
     <tbody>
-      @for (todo of filteredTodos; track todo; let i=$index) {
+      @for (todo of filteredTodos; track todo.id; let i=$index) {
       <tr>
-        <td [ngClass]="{'completed': todo.isComplete}">{{ todo.title }}</td>
+        <td [ngClass]="{'completed': todo.is_complete}">{{ todo.title }}</td>
         <td>
-          <input type="checkbox" [checked]="todo.isComplete" (change)="setCompletionStatus(i)" />
+
+           <input type="checkbox" [checked]="todo.is_complete" (change)="onCheckboxChange(todo.id, $event, todo)">
+          <!-- ****<input type="checkbox" [(ngModel)]="todo.isComplete" (ngModelChange)="setCompletionStatus(todo)" /> -->
+
         </td>
         <td>
-          <button (click)="deleteTask(i)">Delete</button>
+          <button (click)="deleteTask(todo.id)">Delete</button>
 
         </td>
       </tr>
@@ -56,5 +59,5 @@
   }
 
 
-  
+
 </div>

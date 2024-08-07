@@ -17,9 +17,11 @@ export class TodoItemComponent {
   @Output() delete = new EventEmitter<void>();
 
   // -----------------
-
-  @Output() completionStatus = new EventEmitter<boolean>();
+  @Output() completionStatus = new EventEmitter<{ id: number, isComplete: boolean }>();
   
-
+  onCheckboxChange(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    this.completionStatus.emit({ id: this.todo.id, isComplete: target.checked });
+  }
   
 }
