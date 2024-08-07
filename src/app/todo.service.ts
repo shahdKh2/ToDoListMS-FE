@@ -55,7 +55,7 @@ export class TodoService {
   // -----------------------------------------
 
 
-  setCompletionStatus(id: number, is_complete: boolean): Observable<void> {//kamel
+  setCompletionStatus(id: number, is_complete: boolean): Observable<void> {
     return this.http.put<void>(`${this.apiUrl}/updateTask/${id}`, { is_complete: is_complete });
   }
 
