@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-// import { RouterOutlet } from '@angular/router';
 import { TodoListComponent } from './todo-list/todo-list.component';
 import { ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
 import { CommonModule } from '@angular/common';

@@ -1,6 +1,5 @@
 <div class="todo-item">
-  <span [ngClass]="{'completed': todo.isComplete}">{{ todo.title }}</span>
-  <!-- <input type="checkbox" [checked]="todo.isComplete" (change)="completionStatus.emit()"> -->
-  <input type="checkbox" [checked]="todo.isComplete" (change)="onCheckboxChange($event)">
+  <span [ngClass]="{'completed': todo.is_complete}">{{ todo.title }}</span>
+  <input type="checkbox" [checked]="todo.is_complete" (change)="onCheckboxChange($event)">
   <button (click)="delete.emit()" class="delete-btn">Delete</button>
 </div>

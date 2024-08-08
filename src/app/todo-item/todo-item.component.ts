@@ -11,17 +11,19 @@ import { CommonModule } from '@angular/common';
 
 export class TodoItemComponent {
 
-  @Input() todo!: { title: string, id: number, isComplete: boolean };
+  @Input() todo!: { title: string, id: number, is_complete: boolean };
+
   // -----------------
 
   @Output() delete = new EventEmitter<void>();
 
   // -----------------
-  @Output() completionStatus = new EventEmitter<{ id: number, isComplete: boolean }>();
-  
+  @Output() completionStatus = new EventEmitter<{ id: number, is_complete: boolean }>();
+
   onCheckboxChange(event: Event): void {
     const target = event.target as HTMLInputElement;
-    this.completionStatus.emit({ id: this.todo.id, isComplete: target.checked });
+    this.completionStatus.emit({ id: this.todo.id, is_complete: target.checked });
+
   }
   
 }

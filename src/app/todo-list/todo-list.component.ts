@@ -94,17 +94,22 @@ export class TodoListComponent implements OnInit, OnDestroy {
   }
 
   // -----------------------------------------
+  setCompletionStatus(id: number, isComplete: boolean): void {
 
-  setCompletionStatus(id: number, isComplete: boolean): void { //*
-    const todo = this.todos.find(t => t.id === id);
     this.todoService.setCompletionStatus(id, isComplete).pipe(
       takeUntil(this.destroy$)
     ).subscribe({
-      next: () => {
+      next: (updatedTask) => {
+        console.log(updatedTask.is_complete + ": af updated")
+        console.log('Updated Task:', updatedTask); // true
 
-        // console.log(`Task status updated for id=${todo.id}`);
-        // console.log(`**After update: id=${todo.id}, title=${todo.title}, isComplete=${todo.is_complete}`);
-        // this.loadTasks()
+        // Update the specific task in the list
+        const index = this.todos.findIndex(t => t.id === updatedTask.id);
+        if (index > -1) {
+          console.log("-------")
+        } else {
+          console.error('No updated task received from the server');
+        }
       },
       error: (error) => {
         console.error('Updating task failed:', error);
