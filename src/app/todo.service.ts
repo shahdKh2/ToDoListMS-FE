@@ -55,15 +55,9 @@ export class TodoService {
   // -----------------------------------------
 
 
-<<<<<<< HEAD
-  setCompletionStatus(id: number, is_complete: boolean): Observable<Todo> {//* void
+  setCompletionStatus(id: number, is_complete: boolean): Observable<Todo> {//* 
     return this.http.put<Todo>(`${this.apiUrl}/updateTask/${id}`, { is_complete });
-
-=======
-  setCompletionStatus(id: number, is_complete: boolean): Observable<void> {
-    return this.http.put<void>(`${this.apiUrl}/updateTask/${id}`, { is_complete: is_complete });
->>>>>>> 9c691503b3a9218f38acf2dbc84dfc4873e0390e
-  }
+    }
 
 
   // -----------------------------------------
