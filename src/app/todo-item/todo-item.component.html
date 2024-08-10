@@ -1,5 +1,29 @@
-<div class="todo-item">
-  <span [ngClass]="{'completed': todo.is_complete}">{{ todo.title }}</span>
-  <input type="checkbox" [checked]="todo.is_complete" (change)="onCheckboxChange($event)">
-  <button (click)="delete.emit()" class="delete-btn">Delete</button>
-</div>
+<table class="task-table">
+  <thead>
+    <tr>
+      <th>Task</th>
+      <th>Completed</th>
+      <th>Delete</th>
+    </tr>
+  </thead>
+  <tbody *ngIf="todos.length > 0; else noTasks">
+    <tr *ngFor="let todo of todos">
+      <td [ngClass]="{'completed': todo.is_complete}">{{ todo.title }}</td>
+      <td>
+        <input type="checkbox" [checked]="todo.is_complete" (change)="onCheckboxChange(todo.id, todo.is_complete)">
+      </td>
+      <td>
+        <button (click)="deleteTask(todo.id)">Delete</button>
+      </td>
+    </tr>
+  </tbody>
+  <ng-template #noTasks>
+    <tbody>
+      <tr>
+        <td colspan="3" style="text-align: center; color: red; font-weight: bold;">
+          There are no tasks!
+        </td>
+      </tr>
+    </tbody>
+  </ng-template>
+</table>

@@ -4,18 +4,18 @@
     <button type="submit" class="submit-btn">Add</button>
   </form>
 
-  <!-- Search  -->
   <div class="task-form">
     <input [(ngModel)]="searchQuery" placeholder="Search tasks.." class="task-input">
-
     <button class="submit-btn" (click)="filterTasks()">Search</button>
-
     <button (click)="refreshTasks()" class="refresh-btn">
       <img src="refresh.png" alt="Refresh" class="refresh-icon">
     </button>
   </div>
 
-  <!-- Modal for Confirmation -->
+  <app-todo-item [todos]="filteredTodos" (deleteTaskEvent)="deleteTask($event)"
+    (toggleCompletionStatusEvent)="toggleCompletionStatus($event)">
+  </app-todo-item>
+
   <div class="modal" [ngClass]="{'show': showModal}">
     <div class="modal-content">
       <span class="close" (click)="closeModal()">&times;</span>
@@ -25,38 +25,4 @@
       <button class="submit-btn" (click)="closeModal()">No</button>
     </div>
   </div>
-
-
-  @if (filteredTodos.length > 0) {
-  <table class="task-table">
-    <thead>
-      <tr>
-        <th>Task</th>
-        <th>Completed</th>
-        <th>Delete</th>
-      </tr>
-    </thead>
-    <tbody>
-      @for (todo of filteredTodos; track todo.id; let i=$index) {
-      <tr>
-        <td [ngClass]="{'completed': todo.is_complete}">{{ todo.title }}</td>
-        <td>
-
-           <input type="checkbox" [checked]="todo.is_complete" (change)="onCheckboxChange(todo.id, $event, todo)">
-
-        </td>
-        <td>
-          <button (click)="deleteTask(todo.id)">Delete</button>
-
-        </td>
-      </tr>
-      }
-    </tbody>
-  </table>
-  } @else {
-  <p style="color: red; text-align: center; font-weight: bold;">There Are No Tasks !</p>
-  }
-
-
-
 </div>

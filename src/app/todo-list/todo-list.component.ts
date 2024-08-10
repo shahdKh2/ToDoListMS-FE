@@ -7,6 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
+
 @Component({
   selector: 'app-todo-list',
   standalone: true,
@@ -25,47 +26,33 @@ export class TodoListComponent implements OnInit, OnDestroy {
   modalMessage: string = '';
   taskToAdd: string = '';
   private destroy$ = new Subject<void>();
-  // -----------------------------------------
 
-  constructor(private fb: FormBuilder, private todoService: TodoService) {
+  constructor(private fb: FormBuilder, private todoService: TodoService, private cdr: ChangeDetectorRef) {
     this.todoForm = this.fb.group({
       title: ['', [Validators.required]]
     });
   }
 
-  // -----------------------------------------
-
   ngOnInit(): void {
     this.loadTasks();
   }
-  // -----------------------------------------
 
   loadTasks(): void {
-    this.todoService.getTask().pipe(
-      takeUntil(this.destroy$)
-    ).subscribe(
-      {
-        next: (todos) => {
-          // debugger
-          console.log('Tasks loaded:', todos);
-          this.todos = todos;
-          this.filteredTodos = this.todos;
-          console.log('Tasks loaded:', this.todos);
-
-        },
-        error: (error) => {
-          console.error('Error loading tasks:', error);
-        }
-      });
+    this.todoService.getTask().pipe(takeUntil(this.destroy$)).subscribe({
+      next: (todos) => {
+        this.todos = todos;
+        this.filteredTodos = this.todos;
+      },
+      error: (error) => {
+        console.error('Error loading tasks:', error);
+      }
+    });
   }
-  // -----------------------------------------
 
   addTask(): void {
     if (this.todoForm.valid) {
       const title = this.todoForm.get('title')?.value;
-      this.todoService.addTask(title).pipe(
-        takeUntil(this.destroy$)
-      ).subscribe({
+      this.todoService.addTask(title).pipe(takeUntil(this.destroy$)).subscribe({
         next: () => {
           this.todoForm.reset();
           this.loadTasks();
@@ -76,13 +63,10 @@ export class TodoListComponent implements OnInit, OnDestroy {
       });
     }
   }
-  // -----------------------------------------
 
   deleteTask(id: number): void {
     if (confirm('Are you sure you want to delete this task?')) {
-      this.todoService.deleteTask(id).pipe(
-        takeUntil(this.destroy$)
-      ).subscribe({
+      this.todoService.deleteTask(id).pipe(takeUntil(this.destroy$)).subscribe({
         next: () => {
           this.loadTasks();
         },
@@ -93,22 +77,15 @@ export class TodoListComponent implements OnInit, OnDestroy {
     }
   }
 
-  // -----------------------------------------
-  setCompletionStatus(id: number, isComplete: boolean): void {
-
-    this.todoService.setCompletionStatus(id, isComplete).pipe(
-      takeUntil(this.destroy$)
-    ).subscribe({
+  toggleCompletionStatus(event: { id: number, isComplete: boolean }): void {
+    this.todoService.setCompletionStatus(event.id, event.isComplete).pipe(takeUntil(this.destroy$)).subscribe({
       next: (updatedTask) => {
-        console.log(updatedTask.is_complete + ": af updated")
-        console.log('Updated Task:', updatedTask); // true
-
-        // Update the specific task in the list
-        const index = this.todos.findIndex(t => t.id === updatedTask.id);
+        const index = this.todos.findIndex(todo => todo.id === updatedTask.id);
         if (index > -1) {
-          console.log("-------")
-        } else {
-          console.error('No updated task received from the server');
+          this.todos[index].is_complete = updatedTask.is_complete;
+          this.filteredTodos = [...this.todos];
+          this.cdr.detectChanges();
+          this.loadTasks();
         }
       },
       error: (error) => {
@@ -116,17 +93,6 @@ export class TodoListComponent implements OnInit, OnDestroy {
       }
     });
   }
-
-  onCheckboxChange(id: number, event: Event, todo: Todo): void { //*
-    console.log(todo.is_complete + " :before");
-
-    todo.is_complete = !todo.is_complete
-
-    this.setCompletionStatus(id, todo.is_complete);
-    console.log(todo.is_complete + " :after");
-  }
-
-  //------------------------------
 
   filterTasks(): void {
     const query = this.searchQuery.toLowerCase();
@@ -141,13 +107,10 @@ export class TodoListComponent implements OnInit, OnDestroy {
       this.taskToAdd = this.searchQuery;
     }
   }
-  // -----------------------------------------
 
   confirmAction(): void {
     if (this.taskToAdd) {
-      this.todoService.addTask(this.taskToAdd).pipe(
-        takeUntil(this.destroy$)
-      ).subscribe({
+      this.todoService.addTask(this.taskToAdd).pipe(takeUntil(this.destroy$)).subscribe({
         next: () => {
           this.searchQuery = '';
           this.loadTasks();
@@ -160,19 +123,16 @@ export class TodoListComponent implements OnInit, OnDestroy {
     }
     this.closeModal();
   }
-  // -----------------------------------------
 
   closeModal(): void {
     this.showModal = false;
     this.taskToAdd = '';
   }
-  // -----------------------------------------
 
   refreshTasks(): void {
-    this.searchQuery = ''; // Reset search query
+    this.searchQuery = '';
     this.loadTasks();
   }
-  // -----------------------------------------
 
   ngOnDestroy(): void {
     this.destroy$.next();

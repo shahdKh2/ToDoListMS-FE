@@ -1,5 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Todo } from '../todo.service';
+
 
 @Component({
   selector: 'app-todo-item',
@@ -10,20 +12,15 @@ import { CommonModule } from '@angular/common';
 })
 
 export class TodoItemComponent {
+  @Input() todos: Todo[] = [];
+  @Output() deleteTaskEvent = new EventEmitter<number>();
+  @Output() toggleCompletionStatusEvent = new EventEmitter<{ id: number, isComplete: boolean }>();
 
-  @Input() todo!: { title: string, id: number, is_complete: boolean };
-
-  // -----------------
-
-  @Output() delete = new EventEmitter<void>();
-
-  // -----------------
-  @Output() completionStatus = new EventEmitter<{ id: number, is_complete: boolean }>();
-
-  onCheckboxChange(event: Event): void {
-    const target = event.target as HTMLInputElement;
-    this.completionStatus.emit({ id: this.todo.id, is_complete: target.checked });
-
+  onCheckboxChange(id: number, isComplete: boolean): void {
+ 
+    this.toggleCompletionStatusEvent.emit({ id, isComplete: !isComplete });
   }
-  
-}
+
+  deleteTask(id: number): void {
+    this.deleteTaskEvent.emit(id);
+  }}
